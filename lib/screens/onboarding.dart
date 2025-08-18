@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mi_task/screens/homescreen.dart';
+import 'package:mi_task/widgets/custom_button.dart';
 
 
 class OnboardingScreen extends StatefulWidget {
@@ -102,36 +103,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 20),
 
             // Button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: () {
-                  if (_currentPage == onboardingData.length - 1) {
-                    // Navigate to Home
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const Homescreen()),
-                    );
-                  } else {
-                    // Move to next page
-                    _pageController.nextPage(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut);
-                  }
-                },
-                child: Text(
-                    _currentPage == onboardingData.length - 1
-                        ? "Get Started"
-                        : "Next",
-                    style: const TextStyle(fontSize: 18)),
-              ),
+                    Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+            child: CustomButton(
+              text: _currentPage == onboardingData.length - 1
+                  ? "Get Started"
+                  : "Next",
+              onTap: () {
+                if (_currentPage == onboardingData.length - 1) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const Homescreen()),
+                  );
+                } else {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              },
             ),
+          ),
+
           ],
         ),
       ),
