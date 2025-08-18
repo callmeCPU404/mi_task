@@ -17,17 +17,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<Map<String, String>> onboardingData = [
     {
       "title": "Stay Organized",
-      "subtitle":
-          "Stay on top of your day with a simple and intuitive task manager."
+      "subtitle": "Stay on top of your day with a simple and intuitive task manager.",
+      "image": "assets/organised.png",
+      
     },
     {
       "title": "Plan Smart",
-      "subtitle": "Organize your to-dos, set priorities, and track progress with ease."
+      "subtitle": "Organize your to-dos, set priorities, and track progress with ease.",
+      "image": "assets/smart.png",
     },
     {
       "title": "Achieve More",
-      "subtitle":
-          "Boost productivity by managing tasks efficiently — all in one place."
+      "subtitle": "Boost productivity by managing tasks efficiently — all in one place.",
+      "image": "assets/achieve.png",
     },
   ];
 
@@ -51,17 +53,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Placeholder image (replace with AssetImage later)
-                      Container(
-                        height: 250,
-                        width: 250,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade100,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Icon(Icons.task_alt,
-                            size: 120, color: Colors.blue),
-                      ),
+                    
+                      // Actual image from assets
+      Container(
+        height: 250,
+        width: 250,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Image.asset(
+          onboardingData[index]["image"]!,
+          fit: BoxFit.cover,
+        ),
+      ),
                       const SizedBox(height: 40),
                       Text(
                         onboardingData[index]["title"]!,
