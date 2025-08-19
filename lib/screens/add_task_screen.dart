@@ -43,23 +43,31 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
   }
 
   void _saveTask() {
-    if (_formKey.currentState!.validate()) {
-      final subTasks = _subTaskControllers
-          .where((controller) => controller.text.trim().isNotEmpty)
-          .map((controller) => SubTask(title: controller.text.trim()))
-          .toList();
+  if (_formKey.currentState!.validate()) {
+    final subTasks = _subTaskControllers
+        .where((controller) => controller.text.trim().isNotEmpty)
+        .map((controller) => SubTask(title: controller.text.trim()))
+        .toList();
 
-      ref.read(taskProvider.notifier).addTask(
-            title: _titleController.text.trim(),
-            description: _descController.text.trim(),
-            priority: _selectedPriority,
-            progress: _selectedProgress,
-            subTasks: subTasks,
-          );
+    ref.read(taskProvider.notifier).addTask(
+          title: _titleController.text.trim(),
+          description: _descController.text.trim(),
+          priority: _selectedPriority,
+          progress: _selectedProgress,
+          subTasks: subTasks,
+        );
 
-      Navigator.pop(context); // Go back to homescreen
-    }
+    Navigator.pop(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Task created successfully ✅"),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,30 +89,43 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: "Title",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? "Enter a title" : null,
-                ),
-                const SizedBox(height: 16),
-
+             // Title field
+TextFormField(
+  controller: _titleController,
+  decoration: const InputDecoration(
+    labelText: "Title",
+    border: OutlineInputBorder(),
+  ),
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Enter a title";
+    }
+    if (value.trim().length < 5) {
+      return "Title must be at least 5 characters";
+    }
+    return null;
+  },
+),
+const SizedBox(height: 16),
                 // Description
-                TextFormField(
-                  controller: _descController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: "Description",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) => value == null || value.isEmpty
-                      ? "Enter a description"
-                      : null,
-                ),
+// Description field
+TextFormField(
+  controller: _descController,
+  maxLines: 3,
+  decoration: const InputDecoration(
+    labelText: "Description",
+    border: OutlineInputBorder(),
+  ),
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Enter a description";
+    }
+    if (value.trim().length < 10) {
+      return "Description must be at least 10 characters";
+    }
+    return null;
+  },
+),
                 const SizedBox(height: 16),
 
                 // Priority Dropdown

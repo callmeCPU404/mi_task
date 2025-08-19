@@ -128,20 +128,49 @@ class Homescreen extends ConsumerWidget {
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
-        return TaskCard(
-          task: task,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => TaskDetailScreen(task: task),
-              ),
-            );
-          },
-          onDelete: () {
-            ref.read(taskProvider.notifier).deleteTask(task.id);
-          },
-        );
+return TaskCard(
+  task: task,
+  onView: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TaskDetailScreen(task: task),
+      ),
+    );
+  },
+  onDelete: () {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Task"),
+        content: const Text(
+          "Are you sure you want to delete this task?\nThis action cannot be undone.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              ref.read(taskProvider.notifier).deleteTask(task.id);
+              Navigator.pop(context);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Task deleted"),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            },
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
+  },
+);
       },
     );
   }
