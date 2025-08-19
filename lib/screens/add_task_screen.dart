@@ -43,28 +43,39 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
   }
 
   void _saveTask() {
-    if (_formKey.currentState!.validate()) {
-      final subTasks = _subTaskControllers
-          .where((controller) => controller.text.trim().isNotEmpty)
-          .map((controller) => SubTask(title: controller.text.trim()))
-          .toList();
+  if (_formKey.currentState!.validate()) {
+    final subTasks = _subTaskControllers
+        .where((controller) => controller.text.trim().isNotEmpty)
+        .map((controller) => SubTask(title: controller.text.trim()))
+        .toList();
 
-      ref.read(taskProvider.notifier).addTask(
-            title: _titleController.text.trim(),
-            description: _descController.text.trim(),
-            priority: _selectedPriority,
-            progress: _selectedProgress,
-            subTasks: subTasks,
-          );
+    ref.read(taskProvider.notifier).addTask(
+          title: _titleController.text.trim(),
+          description: _descController.text.trim(),
+          priority: _selectedPriority,
+          progress: _selectedProgress,
+          subTasks: subTasks,
+        );
 
-      Navigator.pop(context); // Go back to homescreen
-    }
+    Navigator.pop(context);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Task created successfully "),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         title: const Text("Add Task"),
         actions: [
           IconButton(
@@ -81,32 +92,52 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: "Title",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? "Enter a title" : null,
+            // 🔹 Title Field with live feedback
+                ValueListenableBuilder(
+                  valueListenable: _titleController,
+                  builder: (context, TextEditingValue value, _) {
+                    final length = value.text.trim().length;
+                    final isValid = length >= 5;
+                    return TextFormField(
+                      controller: _titleController,
+                      decoration: InputDecoration(
+                        labelText: "Title",
+                        border: const OutlineInputBorder(),
+                        helperText: isValid
+                            ? "Looks good "
+                            : "At least 5 characters required",
+                        helperStyle: TextStyle(
+                          color: isValid ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
 
-                // Description
-                TextFormField(
-                  controller: _descController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    labelText: "Description",
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) => value == null || value.isEmpty
-                      ? "Enter a description"
-                      : null,
+                // 🔹 Description Field with live feedback
+                ValueListenableBuilder(
+                  valueListenable: _descController,
+                  builder: (context, TextEditingValue value, _) {
+                    final length = value.text.trim().length;
+                    final isValid = length >= 10;
+                    return TextFormField(
+                      controller: _descController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: "Description",
+                        border: const OutlineInputBorder(),
+                        helperText: isValid
+                            ? "Looks good "
+                            : "At least 10 characters required",
+                        helperStyle: TextStyle(
+                          color: isValid ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
-
                 // Priority Dropdown
                 DropdownButtonFormField<Priority>(
                   value: _selectedPriority,
@@ -117,7 +148,7 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
                   items: Priority.values.map((p) {
                     return DropdownMenuItem(
                       value: p,
-                      child: Text(p.name.toUpperCase()),
+                      child: Text(p.name.toLowerCase()),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -191,9 +222,10 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.blue,
         onPressed: _saveTask,
-        icon: const Icon(Icons.save),
-        label: const Text("Save Task"),
+        icon: const Icon(Icons.save, color: Colors.white),
+        label: const Text("Save Task", style: TextStyle(color: Colors.white)),
       ),
     );
   }
