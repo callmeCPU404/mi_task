@@ -61,7 +61,7 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text("Task created successfully ✅"),
+        content: Text("Task created successfully "),
         backgroundColor: Colors.green,
       ),
     );
@@ -89,45 +89,52 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-             // Title field
-TextFormField(
-  controller: _titleController,
-  decoration: const InputDecoration(
-    labelText: "Title",
-    border: OutlineInputBorder(),
-  ),
-  validator: (value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Enter a title";
-    }
-    if (value.trim().length < 5) {
-      return "Title must be at least 5 characters";
-    }
-    return null;
-  },
-),
-const SizedBox(height: 16),
-                // Description
-// Description field
-TextFormField(
-  controller: _descController,
-  maxLines: 3,
-  decoration: const InputDecoration(
-    labelText: "Description",
-    border: OutlineInputBorder(),
-  ),
-  validator: (value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Enter a description";
-    }
-    if (value.trim().length < 10) {
-      return "Description must be at least 10 characters";
-    }
-    return null;
-  },
-),
+            // 🔹 Title Field with live feedback
+                ValueListenableBuilder(
+                  valueListenable: _titleController,
+                  builder: (context, TextEditingValue value, _) {
+                    final length = value.text.trim().length;
+                    final isValid = length >= 5;
+                    return TextFormField(
+                      controller: _titleController,
+                      decoration: InputDecoration(
+                        labelText: "Title",
+                        border: const OutlineInputBorder(),
+                        helperText: isValid
+                            ? "Looks good "
+                            : "At least 5 characters required",
+                        helperStyle: TextStyle(
+                          color: isValid ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 16),
 
+                // 🔹 Description Field with live feedback
+                ValueListenableBuilder(
+                  valueListenable: _descController,
+                  builder: (context, TextEditingValue value, _) {
+                    final length = value.text.trim().length;
+                    final isValid = length >= 10;
+                    return TextFormField(
+                      controller: _descController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: "Description",
+                        border: const OutlineInputBorder(),
+                        helperText: isValid
+                            ? "Looks good "
+                            : "At least 10 characters required",
+                        helperStyle: TextStyle(
+                          color: isValid ? Colors.green : Colors.red,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
                 // Priority Dropdown
                 DropdownButtonFormField<Priority>(
                   value: _selectedPriority,
