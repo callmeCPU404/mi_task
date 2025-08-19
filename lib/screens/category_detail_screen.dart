@@ -149,6 +149,7 @@ class _CategoryDetailScreenState extends ConsumerState<CategoryDetailScreen>
     final tasks = ref.watch(taskProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.category.name.toLowerCase()),
         backgroundColor: Colors.blue,

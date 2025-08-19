@@ -88,7 +88,7 @@ class _HomescreenState extends ConsumerState<Homescreen> {
         tasks.where((t) => t.progress == Progress.complete).length;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -130,117 +130,51 @@ Padding(
 ),
 
 
-              SizedBox(width: 12),
-              
-              const SizedBox(height: 25),
-
-// 🔹 Recent Priority Tasks
-const Text("Recent Priority Tasks",
-    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-const SizedBox(height: 12),
+// Motivation Section (replace your previous section)
+// const Text("Motivation",
+//     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+// const SizedBox(height: 12),
 
 SizedBox(
-  height: 190, // enough for card + dots
-  child: Builder(
-    builder: (context) {
-      if (topThree.isEmpty) {
-        return Column(
-          children: [
-         DottedBorder(
-  options: RoundedRectDottedBorderOptions(
-    color: Colors.grey,
-    strokeWidth: 1,
-    radius: const Radius.circular(12),
-    dashPattern: [6, 4],
-  ),
-  child: Container(
-    height: 140,
-    width: double.infinity,
-    alignment: Alignment.center,
-    child: Text(
-      "No priority tasks yet.\nThey will appear here.",
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.grey.withOpacity(0.6),
-        fontStyle: FontStyle.italic,
-      ),
-    ),
-  ),
-),
+  height: 150,
+  child: Column(
+    children: [
+      Expanded(
+        child: PageView(
+          controller: _pageController,
+          children: const [
+            _AnimatedQuote(
+              text: "“The future depends on what you do today.” – Mahatma Gandhi",
+            ),
+            _AnimatedQuote(
+              text: "“Productivity is never an accident. It is always the result of a commitment to excellence.” – Paul J. Meyer",
+            ),
+            _AnimatedQuote(
+              text: "“Don’t watch the clock; do what it does. Keep going.” – Sam Levenson",
+            ),
           ],
-        );
-      }
-
-      return Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: topThree.length,
-              itemBuilder: (context, index) {
-                final task = topThree[index];
-                return GestureDetector(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => TaskDetailScreen(task: task),
-                    ),
-                  ),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(task.title,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 6),
-                          Text(
-                            task.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const Spacer(),
-                          Text(
-                            "Priority: ${task.priority.name}",
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.blue),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 8),
-          SmoothPageIndicator(
-            controller: _pageController,
-            count: topThree.length,
-            effect: ExpandingDotsEffect(
-              dotHeight: 8,
-              dotWidth: 8,
-              spacing: 6,
-              activeDotColor: Colors.blue,
-              dotColor: Colors.grey.shade400,
-            ),
-          ),
-        ],
-      );
-    },
+        ),
+      ),
+      const SizedBox(height: 8),
+      SmoothPageIndicator(
+        controller: _pageController,
+        count: 3,
+        effect: ExpandingDotsEffect(
+          dotHeight: 8,
+          dotWidth: 8,
+          spacing: 6,
+          activeDotColor: Colors.blue,
+          dotColor: Colors.grey.shade400,
+        ),
+      ),
+    ],
   ),
 ),
 
 
               // 🔹 Categories Section
               const Text("Categories",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue)),
               const SizedBox(height: 12),
 
               GridView.count(
@@ -374,5 +308,70 @@ SizedBox(
 }
 
 
+}
 
+class _AnimatedQuote extends StatefulWidget {
+  final String text;
+  const _AnimatedQuote({required this.text});
+
+  @override
+  State<_AnimatedQuote> createState() => _AnimatedQuoteState();
+}
+
+class _AnimatedQuoteState extends State<_AnimatedQuote>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant _AnimatedQuote oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _controller
+        ..reset()
+        ..forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Container(
+        color: Colors.white, // ✅ pure white background
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Text(
+          widget.text,
+          style: const TextStyle(
+            fontSize: 16,
+            fontStyle: FontStyle.italic,
+            color: Colors.black87,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
 }
