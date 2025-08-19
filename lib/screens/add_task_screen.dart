@@ -72,7 +72,10 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         title: const Text("Add Task"),
         actions: [
           IconButton(
@@ -145,7 +148,7 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
                   items: Priority.values.map((p) {
                     return DropdownMenuItem(
                       value: p,
-                      child: Text(p.name.toUpperCase()),
+                      child: Text(p.name.toLowerCase()),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -219,9 +222,10 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.blue,
         onPressed: _saveTask,
-        icon: const Icon(Icons.save),
-        label: const Text("Save Task"),
+        icon: const Icon(Icons.save, color: Colors.white),
+        label: const Text("Save Task", style: TextStyle(color: Colors.white)),
       ),
     );
   }

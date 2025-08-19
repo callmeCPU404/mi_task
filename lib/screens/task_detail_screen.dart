@@ -25,7 +25,10 @@ class TaskDetailScreen extends ConsumerWidget {
         ref.watch(taskProvider).firstWhere((t) => t.id == task.id);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: _priorityColor(updatedTask.priority),
+        foregroundColor: Colors.white,
         title: const Text("Task Details"),
       ),
       body: Padding(
