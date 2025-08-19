@@ -443,11 +443,31 @@ class _HomescreenState extends ConsumerState<Homescreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 🔹 Greeting
-              const Text(
-                "Hello there 👋",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
+             // Greeting section
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Hello there 👋",
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      SizedBox(height: 4),
+      Text(
+        "Let me organize your tasks",
+        style: TextStyle(
+          fontSize: 14,
+          fontStyle: FontStyle.italic, 
+          color: Colors.grey[600],
+        ),
+      ),
+    ],
+  ),
+),
 
               // 🔹 Search + Filter row
               Row(
